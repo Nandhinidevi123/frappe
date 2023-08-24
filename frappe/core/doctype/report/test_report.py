@@ -18,6 +18,11 @@ test_dependencies = ["User"]
 
 
 class TestReport(FrappeTestCase):
+	@classmethod
+	def setUpClass(cls) -> None:
+		cls.enable_safe_exec()
+		return super().setUpClass()
+
 	def test_report_builder(self):
 		if frappe.db.exists("Report", "User Activity Report"):
 			frappe.delete_doc("Report", "User Activity Report")
@@ -118,11 +123,10 @@ class TestReport(FrappeTestCase):
 					}
 				]
 			),
+			json.dumps({"user": "Administrator", "doctype": "User"}),
 		)
 		custom_report = frappe.get_doc("Report", custom_report_name)
-		columns, result = custom_report.run_query_report(
-			filters={"user": "Administrator", "doctype": "User"}, user=frappe.session.user
-		)
+		columns, result = custom_report.run_query_report(user=frappe.session.user)
 
 		self.assertListEqual(["email"], [column.get("fieldname") for column in columns])
 		admin_dict = frappe.core.utils.find(result, lambda d: d["name"] == "Administrator")
