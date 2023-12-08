@@ -212,8 +212,8 @@ def get_chart_config(chart, filters, timespan, timegrain, from_date, to_date):
 		doctype,
 		fields=[f"{datefield} as _unit", f"SUM({value_field})", "COUNT(*)"],
 		filters=filters,
-		group_by="_unit",
-		order_by="_unit asc",
+		group_by=f"{datefield}",
+		order_by=f"{datefield} asc",
 		as_list=True,
 	)
 
